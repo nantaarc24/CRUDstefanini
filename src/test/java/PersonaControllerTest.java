@@ -79,28 +79,23 @@ public class PersonaControllerTest {
 
     @Test
     public void testUpdatePersona() throws Exception {
-        Long id = 2L;
+        Long id = 1L;
         PersonaEntity personaOriginal = new PersonaEntity(id, "Juan", "Perez", "1990-01-01", 12345678);
 
-        // Creamos una segunda persona con el mismo id
         PersonaEntity personaModificada = new PersonaEntity(id, "Juan Modificado", "Perez Modificado", "1990-01-01", 12345678);
 
-        // Configuramos el mock del servicio PersonaService
         when(personaService.updatePersona(eq(id), any(PersonaEntity.class))).thenReturn(personaOriginal);
 
-        // Aquí simulamos que el servicio retorna una persona diferente si el id es 2L
-       // when(personaService.updatePersona(eq(2L), any(PersonaEntity.class))).thenReturn(personaModificada);
+        // Aquí simulamos que el servicio retorna una persona diferente
+       when(personaService.updatePersona(eq(2L), any(PersonaEntity.class))).thenReturn(personaModificada);
 
-        MvcResult result = mockMvc.perform(put("/personas/{id}", id)
+        MvcResult result = mockMvc.perform(put("/personas/{id}", 2L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content("{ \"nombre\": \"Juan\", \"apellido\": \"Perez\", \"fechaNac\": \"1990-01-01\", \"dni\": 12345678 }"))
                 .andReturn();
 
-        // Asegurémonos de que se realizó la solicitud con éxito (código de estado 200)
         assertEquals(200, result.getResponse().getStatus());
-
-        // Imprimimos la respuesta y la solicitud
         System.out.println(result.getResponse().getContentAsString());
         System.out.println(result.getRequest().getContentAsString());
     }
