@@ -31,14 +31,22 @@ public class PersonaController {
 
     @PostMapping
     public ResponseEntity<PersonaEntity> createPersona(@RequestBody PersonaEntity personaEntity){
-        PersonaEntity persona = personaService.savePersona(personaEntity);
-        return new ResponseEntity<>(persona, HttpStatus.CREATED);
+        try {
+            PersonaEntity persona = personaService.savePersona(personaEntity);
+            return new ResponseEntity<>(persona, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PersonaEntity> updatePersona(@PathVariable(name = "id") Long id, @RequestBody PersonaEntity persona){
-        PersonaEntity updatePersona = personaService.updatePersona(id, persona);
-        return new ResponseEntity<>(updatePersona, HttpStatus.OK);
+        try {
+            PersonaEntity updatePersona = personaService.updatePersona(id, persona);
+            return new ResponseEntity<>(updatePersona, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{id}")

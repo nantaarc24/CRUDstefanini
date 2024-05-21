@@ -23,6 +23,8 @@ public class PersonaService {
     }
 
     public PersonaEntity savePersona(PersonaEntity persona){
+
+        validatePersona(persona);
         return personaRepository.save(persona);
     }
 
@@ -34,6 +36,8 @@ public class PersonaService {
             personaUpdate.setApellido(persona.getApellido());
             personaUpdate.setFechaNac(persona.getFechaNac());
             personaUpdate.setDni(persona.getDni());
+
+            validatePersona(personaUpdate);
             return personaRepository.save(personaUpdate);
         }else{
             throw new RuntimeException("No se encontro la persona con id "+id);
@@ -43,4 +47,27 @@ public class PersonaService {
     public void deletePersona(Long id){
         personaRepository.deleteById(id);
     }
+
+    private void validatePersona(PersonaEntity persona) {
+        if (persona.getNombre() == null || persona.getNombre().isEmpty()) {
+            throw new RuntimeException("El nombre no puede estar vacío");
+        }
+        if (persona.getApellido() == null || persona.getApellido().isEmpty()) {
+            throw new RuntimeException("El apellido no puede estar vacío");
+        }
+        if (persona.getFechaNac() == null || persona.getFechaNac().isEmpty()) {
+            throw new RuntimeException("La fecha de nacimiento no puede estar vacía");
+        }
+        if (!persona.getFechaNac().matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+            throw new RuntimeException("La fecha de nacimiento debe tener el formato YYYY-MM-DD");
+        }
+        if (String.valueOf(persona.getDni()).length() != 8) {
+            throw new RuntimeException("El DNI debe tener 8 dígitos");
+        }
+        // Validación adicional para el formato del DNI
+        if (!String.valueOf(persona.getDni()).matches("^\\d{8}$")) {
+            throw new RuntimeException("El DNI debe ser un número de 8 dígitos");
+        }
+    }
+
 }
